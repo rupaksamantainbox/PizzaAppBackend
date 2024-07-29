@@ -19,7 +19,9 @@ async function loginUser(authDetails) {
         throw { message : "Invalid Password", statusCode : 401}
     }
 
-    const token = jwt.sign({email : user.email, id : user.id},JWT_SECRET,{expiresIn : JWT_EXPIRY})
+    const userRole = user.role ? user.role : "USER";
+
+    const token = jwt.sign({email : user.email, id : user.id, role: userRole},JWT_SECRET,{expiresIn : '1h'})
     return token;
 }
 

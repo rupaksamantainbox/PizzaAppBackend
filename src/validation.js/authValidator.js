@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config/serverConfig')
+const UnauthorizedError = require('../utils/unauthorizedError')
 
 async function isLoggedIn(req, res, next){
 
@@ -14,25 +15,47 @@ async function isLoggedIn(req, res, next){
         });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET)
-
-    if(!decoded){
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET)
+        if(!decoded){
+            throw new UnauthorizedError();
+        }
+        req.user = {
+            email : decoded.email,
+            id : decoded.id,
+            role : decoded.role
+        }
+        next()
+    } catch (error) {
         return res.status(401).json({
             success : false,
             data : {},
-            error : "Authentication Failed",
+            error : error,
             message : "Invalid token provided"
         });
     }
+}
 
-    req.user = {
-        email : decoded.email,
-        id : decoded.id
+async function isAdmin(req,res,next){
+    const loggedInUser = req.user;
+    if(loggedInUser.role == "ADMIN"){
+        console.log("User is Admin")
+        next()
+    }else{
+        res.status(401).json({
+            success : false,
+            data : {},
+            message : "You are not Authorized",
+            error : {
+                statusCode : 401,
+                reason : "Unauthorized User"
+            }
+        })
     }
-
-    next()
+    
 }
 
 module.exports = {
-    isLoggedIn
+    isLoggedIn,
+    isAdmin
 }
