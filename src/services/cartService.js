@@ -15,7 +15,7 @@ async function getCart(userId){
 
 async function modifyCart(userId, productId, shouldAdd = true) {
     const quantityValue = (shouldAdd == true) ? 1 : -1;
-    console.log(quantityValue)
+    //console.log(quantityValue)
     const cart = await getCart(userId);
     const product = await getProductById(productId);
     if(!product) {

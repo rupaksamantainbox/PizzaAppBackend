@@ -1,8 +1,10 @@
 const User = require('../schema/userSchema');
 
 async function findUser(parameters){
+    console.log(parameters)
     try {  
         const response = await User.findOne({...parameters})
+        //console.log(response)
         return response
     }
     catch (error) {
