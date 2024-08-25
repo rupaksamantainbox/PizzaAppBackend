@@ -28,6 +28,15 @@ async function getProductById(productId){
     }
 }
 
+async function getAllProducts(productId){
+    try {
+        const products = await Product.find({})
+        return products
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 async function deleteProductById(productId){
     try {
         const response = await Product.findByIdAndDelete(productId)
@@ -40,6 +49,6 @@ async function deleteProductById(productId){
 module.exports = {
     createProduct,
     getProductById,
-    deleteProductById
-
+    deleteProductById,
+    getAllProducts
 }

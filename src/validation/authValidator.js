@@ -5,6 +5,8 @@ const UnauthorizedError = require('../utils/unauthorizedError')
 async function isLoggedIn(req, res, next){
 
     const token = req.cookies['authToken']
+    //console.log("AUth")
+    //console.log(req.cookies);
 
     if(!token){
         return res.status(401).json({
@@ -17,6 +19,7 @@ async function isLoggedIn(req, res, next){
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET)
+        
         if(!decoded){
             throw new UnauthorizedError();
         }
@@ -27,6 +30,19 @@ async function isLoggedIn(req, res, next){
         }
         next()
     } catch (error) {
+        if(error.name === "TokenExpiredError") {
+            res.cookie("authToken", "", {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+            return res.status(200).json({
+                success: true,
+                message: "Log out successfull",
+                error: {},
+                data: {}
+            });
+        }
         return res.status(401).json({
             success : false,
             data : {},

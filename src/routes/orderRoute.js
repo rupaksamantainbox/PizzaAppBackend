@@ -1,6 +1,6 @@
 const express = require('express');
 const { createNewOrder, getAllOrdersByUser, getOrders, cancelOrder, changeOrder } = require('../controllers/orderController');
-const { isLoggedIn, isAdmin } = require('../validation.js/authValidator');
+const { isLoggedIn, isAdmin } = require('../validation/authValidator');
 const { getOrderById } = require('../repositories/orderRepository');
 
 
